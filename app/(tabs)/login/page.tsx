@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 import { AlertPopup } from "../../components/AlertPopup";
 import Link from "next/link";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
   const { baseUrl, setBaseUrl } = useApp();
+  const { t } = useLanguage();
 
   const [alertState, setAlertState] = useState<{
     isOpen: boolean;
@@ -49,15 +51,15 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!serverDomain.trim()) {
-      showAlert("Please enter your organization's URL.", "error");
+      showAlert(t("Please enter your organization's URL."), "error");
       return;
     }
     if (!email.trim()) {
-      showAlert("Please enter your email.", "error");
+      showAlert(t("Please enter your email."), "error");
       return;
     }
     if (!password.trim()) {
-      showAlert("Please enter your password.", "error");
+      showAlert(t("Please enter your password."), "error");
       return;
     }
 
@@ -78,7 +80,7 @@ export default function LoginPage() {
         });
       } catch {
         // Network/DNS error — URL is unreachable
-        showAlert("Could not reach this organization. Please check the URL and try again.", "error");
+        showAlert(t("Could not reach this organization. Please check the URL and try again."), "error");
         setIsLoading(false);
         return;
       }
@@ -88,31 +90,31 @@ export default function LoginPage() {
       if (response.status === 201) {
         if (data.user?.email_verified_at) {
           login(data.token, data.user);
-          showAlert("Login Successful", "success");
+          showAlert(t("Login Successful"), "success");
           setTimeout(() => { router.push("/account"); }, 1000);
         } else {
-          showAlert("Your email is not verified. Please check your inbox and verify your email before logging in.", "info");
+          showAlert(t("Your email is not verified. Please check your inbox and verify your email before logging in."), "info");
         }
       } else if (response.status === 401) {
-        showAlert("Incorrect password. Please try again.", "error");
+        showAlert(t("Incorrect password. Please try again."), "error");
       } else if (response.status === 404) {
-        showAlert("No account found with this email address.", "error");
+        showAlert(t("No account found with this email address."), "error");
       } else if (response.status === 403) {
-        showAlert("Your account has been disabled. Please contact support.", "error");
+        showAlert(t("Your account has been disabled. Please contact support."), "error");
       } else {
         const msg = data?.message || "";
         if (msg.toLowerCase().includes("password")) {
-          showAlert("Incorrect password. Please try again.", "error");
+          showAlert(t("Incorrect password. Please try again."), "error");
         } else if (msg.toLowerCase().includes("email")) {
-          showAlert("No account found with this email address.", "error");
+          showAlert(t("No account found with this email address."), "error");
         } else if (msg.toLowerCase().includes("verified")) {
-          showAlert("Your email is not verified. Please check your inbox.", "info");
+          showAlert(t("Your email is not verified. Please check your inbox."), "info");
         } else {
-          showAlert(msg || "Login failed. Please try again.", "error");
+          showAlert(msg || t("Login failed. Please try again."), "error");
         }
       }
     } catch {
-      showAlert("Something went wrong. Please try again.", "error");
+      showAlert(t("Something went wrong. Please try again."), "error");
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +128,7 @@ export default function LoginPage() {
           <div className="text-[#5851EF]">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
           </div>
-          <h1 className="text-[28px] font-bold text-[#111111]">Log In</h1>
+          <h1 className="text-[28px] font-bold text-[#111111]">{t("Log In")}</h1>
         </div>
 
         {/* Login / Signup toggle pill */}
@@ -135,14 +137,14 @@ export default function LoginPage() {
             type="button"
             className="px-5 py-2 rounded-full text-sm font-semibold bg-[#5851EF] text-white shadow-md transition-all duration-200"
           >
-            Log In
+            {t("Log In")}
           </button>
           <button
             type="button"
             onClick={() => router.push("/signup")}
             className="px-5 py-2 rounded-full text-sm font-semibold text-[#757575] hover:text-[#111111] transition-all duration-200"
           >
-            Sign Up
+            {t("Sign Up")}
           </button>
         </div>
       </div>
@@ -150,7 +152,7 @@ export default function LoginPage() {
       <form onSubmit={handleLogin} noValidate className="flex flex-col flex-1">
         {/* Your organization Section */}
         <div className="flex flex-col gap-2 mb-6">
-          <label className="text-sm font-bold text-[#111111] px-1">Your organization</label>
+          <label className="text-sm font-bold text-[#111111] px-1">{t("Your organization")}</label>
           <div className="flex items-center bg-white border-2 border-[#D3C9FC] focus-within:border-[#5851EF] rounded-[18px] overflow-hidden transition-all duration-200">
             {/* Fixed https:// prefix */}
             <span className="pl-4 pr-1 text-[15px] font-semibold text-[#5851EF] select-none whitespace-nowrap">https://</span>
@@ -174,19 +176,19 @@ export default function LoginPage() {
               </div>
             )}
           </div>
-          <span className="text-[12px] text-[#757575] font-medium px-1">Enter your organization's domain to continue</span>
+          <span className="text-[12px] text-[#757575] font-medium px-1">{t("Enter your organization's domain to continue")}</span>
         </div>
 
         {/* Separator */}
         <div className="flex items-center my-6">
           <div className="flex-1 border-t border-gray-200"></div>
-          <span className="mx-4 text-sm text-gray-400 font-medium">and</span>
+          <span className="mx-4 text-sm text-gray-400 font-medium">{t("and")}</span>
           <div className="flex-1 border-t border-gray-200"></div>
         </div>
 
         {/* Login details Section */}
         <div className="flex flex-col gap-2 mb-6">
-          <label className="text-sm font-bold text-[#111111] px-1">Login details</label>
+          <label className="text-sm font-bold text-[#111111] px-1">{t("Login details")}</label>
           <div className="border border-gray-200 rounded-[20px] overflow-hidden bg-white">
             {/* Email Input */}
             <div className="relative flex items-center border-b border-gray-200 bg-white">
@@ -195,7 +197,7 @@ export default function LoginPage() {
               </div>
               <input
                 type="email"
-                placeholder="E-mail"
+                placeholder={t("E-mail")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-transparent py-4 pl-12 pr-4 outline-none text-[15px] text-[#111111] placeholder-gray-400 font-medium"
@@ -209,7 +211,7 @@ export default function LoginPage() {
               </div>
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password"
+                placeholder={t("Password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-transparent py-4 pl-12 pr-12 outline-none text-[15px] text-[#111111] placeholder-gray-400 font-medium"
@@ -233,7 +235,7 @@ export default function LoginPage() {
         {/* Forgot password */}
         <div className="flex justify-end mb-8 px-1">
           <Link href="/forgot-password" className="text-[#5851EF] font-semibold text-sm hover:underline">
-            Forgot password?
+            {t("Forgot password?")}
           </Link>
         </div>
 
@@ -248,7 +250,7 @@ export default function LoginPage() {
               className="w-full text-white font-medium text-base py-4 rounded-2xl mb-4 relative overflow-hidden flex justify-center"
               style={{ background: 'linear-gradient(to right, #CC61FF 5%, #5851EF 88%)' }}
             >
-              Log In
+              {t("Log In")}
             </button>
           )}
         </div>

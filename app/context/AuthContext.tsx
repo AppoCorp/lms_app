@@ -10,6 +10,7 @@ export interface User {
   role?: string;
   photo?: string;
   phone?: string;
+  language?: string;
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   token: string | null;
   login: (token: string, userData: User) => void;
   logout: () => void;
+  updateUser: (patch: Partial<User>) => void;
   isAuthenticated: boolean;
   updateProfile: (data: FormData) => Promise<any>;
   changePassword: (data: any) => Promise<any>;
@@ -64,6 +66,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("user");
     localStorage.removeItem("email");
     localStorage.removeItem("password");
+  };
+
+  const updateUser = (patch: Partial<User>) => {
+    setUser((prev) => {
+      const next = { ...(prev ?? {}), ...patch };
+      localStorage.setItem("user", JSON.stringify(next));
+      return next;
+    });
   };
 
   const updateProfile = async (formData: FormData): Promise<any> => {
@@ -129,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated: !!token, updateProfile, changePassword, deleteAccount }}
+      value={{ user, token, login, logout, updateUser, isAuthenticated: !!token, updateProfile, changePassword, deleteAccount }}
     >
       {children}
     </AuthContext.Provider>

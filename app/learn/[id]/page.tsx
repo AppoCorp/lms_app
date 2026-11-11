@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 
 import { AlertPopup } from "../../components/AlertPopup";
+import { useLanguage } from "../../context/LanguageContext";
 
 function CoursePlayerPageContent() {
   const params = useParams();
@@ -18,6 +19,7 @@ function CoursePlayerPageContent() {
   const { myCourses, fetchCourseSections } = useMyCourses();
   const { token, user } = useAuth();
   const { baseUrl } = useApp();
+  const { t } = useLanguage();
   
   const [sections, setSections] = useState<any[]>([]);
   const [activeLesson, setActiveLesson] = useState<any>(null);
@@ -104,7 +106,7 @@ function CoursePlayerPageContent() {
     }
   }, [activeTab, baseUrl, token, courseId]);
 
-  const course = myCourses.find(c => c.id.toString() === courseId) || { title: "Course Details" };
+  const course = myCourses.find(c => c.id.toString() === courseId) || { title: t("Course Details") };
 
   useEffect(() => {
     if (!baseUrl || !token) {
@@ -179,9 +181,9 @@ function CoursePlayerPageContent() {
         return (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white px-6 text-center">
             <BackBtn />
-            <p className="text-sm font-medium">Sign in to access this lesson</p>
+            <p className="text-sm font-medium">{t("Sign in to access this lesson")}</p>
             <p className="mt-2 text-xs text-white/70 max-w-[260px] leading-5">
-              The quiz and course curriculum load from your student session, so the app needs an active login before it can continue.
+              {t("The quiz and course curriculum load from your student session, so the app needs an active login before it can continue.")}
             </p>
           </div>
         );
@@ -190,7 +192,7 @@ function CoursePlayerPageContent() {
       return (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white">
           <BackBtn />
-          <p className="text-sm font-medium">No lesson selected</p>
+          <p className="text-sm font-medium">{t("No lesson selected")}</p>
         </div>
       );
     }
@@ -203,9 +205,9 @@ function CoursePlayerPageContent() {
           <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFB74D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           </div>
-          <h2 className="text-xl font-bold mb-2">Lesson Locked</h2>
+          <h2 className="text-xl font-bold mb-2">{t("Lesson Locked")}</h2>
           <p className="text-sm text-gray-300 max-w-xs leading-relaxed">
-            This course supports drip content. Please complete the previous lessons in order to unlock this lesson.
+            {t("This course supports drip content. Please complete the previous lessons in order to unlock this lesson.")}
           </p>
         </div>
       );
@@ -299,13 +301,13 @@ function CoursePlayerPageContent() {
           </div>
           <p className="text-sm font-semibold mb-2 text-center px-4">{activeLesson.title}</p>
           <p className="text-xs text-gray-400 mb-6 text-center max-w-[240px] px-4 leading-relaxed">
-            This lesson is a quiz. Tap the button below to take it.
+            {t("This lesson is a quiz. Tap the button below to take it.")}
           </p>
           <button
             onClick={() => router.push(`/quiz/${activeLesson.id}?course_id=${courseId}`)}
             className="px-6 py-3 bg-[#5851EF] text-white rounded-xl text-xs font-semibold shadow-sm hover:bg-[#4841CF] transition-colors"
           >
-            Take Quiz
+            {t("Take Quiz")}
           </button>
         </div>
       );
@@ -322,7 +324,7 @@ function CoursePlayerPageContent() {
         return (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white p-6">
             <BackBtn />
-            <p className="text-sm">No file available for this lesson.</p>
+            <p className="text-sm">{t("No file available for this lesson.")}</p>
           </div>
         );
       }
@@ -370,7 +372,7 @@ function CoursePlayerPageContent() {
           </div>
           <p className="text-sm font-semibold mb-2 text-center">{activeLesson.title}</p>
           <p className="text-xs text-gray-400 mb-6 text-center max-w-[240px] leading-relaxed">
-            This file cannot be previewed directly. Open it in your browser or download it.
+            {t("This file cannot be previewed directly. Open it in your browser or download it.")}
           </p>
           <a
             href={fileUrl}
@@ -378,7 +380,7 @@ function CoursePlayerPageContent() {
             rel="noopener noreferrer"
             className="px-6 py-3 bg-[#5851EF] text-white rounded-xl text-xs font-semibold hover:bg-[#4841CF] transition-colors"
           >
-            Open File
+            {t("Open File")}
           </a>
         </div>
       );
@@ -398,7 +400,7 @@ function CoursePlayerPageContent() {
                 dangerouslySetInnerHTML={{ __html: textContent }}
               />
             ) : (
-              <p className="text-sm text-gray-500">No content available.</p>
+              <p className="text-sm text-gray-500">{t("No content available.")}</p>
             )}
           </div>
         </div>
@@ -420,16 +422,16 @@ function CoursePlayerPageContent() {
   if (!baseUrl || !token) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4 text-center text-white">
-        <p className="text-sm font-medium">Sign in to access this lesson</p>
+        <p className="text-sm font-medium">{t("Sign in to access this lesson")}</p>
         <p className="mt-2 max-w-[280px] text-xs leading-5 text-white/70">
-          The quiz and course curriculum load from your student session, so the app needs an active login before it can continue.
+          {t("The quiz and course curriculum load from your student session, so the app needs an active login before it can continue.")}
         </p>
       </div>
     );
   }
 
   if (isLoading) {
-    return <div className="flex min-h-screen items-center justify-center bg-black text-white">Loading player...</div>;
+    return <div className="flex min-h-screen items-center justify-center bg-black text-white">{t("Loading player...")}</div>;
   }
 
   return (
@@ -459,7 +461,7 @@ function CoursePlayerPageContent() {
                 : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
-            {tab.label}
+            {t(tab.label)}
           </button>
         ))}
       </div>
@@ -498,7 +500,7 @@ function CoursePlayerPageContent() {
                             if (isLessonLocked) {
                               setAlertState({
                                 isOpen: true,
-                                message: "This lesson is locked by Drip Content. Please complete previous lessons first.",
+                                message: t("This lesson is locked by Drip Content. Please complete previous lessons first."),
                                 type: "info"
                               });
                               return;
@@ -591,7 +593,7 @@ function CoursePlayerPageContent() {
                 dangerouslySetInnerHTML={{ __html: activeLesson.summary }}
               />
             ) : (
-              <p className="text-sm text-gray-500">No summary available for this lesson.</p>
+              <p className="text-sm text-gray-500">{t("No summary available for this lesson.")}</p>
             )}
           </div>
         )}
@@ -600,19 +602,19 @@ function CoursePlayerPageContent() {
         {activeTab === "live_class" && (
           <div className="space-y-3">
             {isLoadingLiveClasses ? (
-              <div className="text-center py-8 text-sm text-gray-500">Loading live classes...</div>
+              <div className="text-center py-8 text-sm text-gray-500">{t("Loading live classes...")}</div>
             ) : liveClasses.length === 0 ? (
               <div className="text-center py-10 bg-white rounded-2xl border border-gray-100 text-gray-500 text-sm">
-                No live classes scheduled for this course.
+                {t("No live classes scheduled for this course.")}
               </div>
             ) : (
               liveClasses.map((item: any) => (
                 <div key={item.id} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col space-y-2">
                   <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-sm text-[#111]">{item.topic || item.title || "Live Class"}</h3>
-                    <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">Scheduled</span>
+                    <h3 className="font-semibold text-sm text-[#111]">{item.topic || item.title || t("Live Class")}</h3>
+                    <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">{t("Scheduled")}</span>
                   </div>
-                  <p className="text-xs text-gray-500">Date: {item.start_time || item.date || "Upcoming"}</p>
+                  <p className="text-xs text-gray-500">{t("Date: ____", item.start_time || item.date || t("Upcoming"))}</p>
                   {item.join_url && (
                     <a
                       href={item.join_url}
@@ -620,7 +622,7 @@ function CoursePlayerPageContent() {
                       rel="noopener noreferrer"
                       className="mt-2 inline-flex items-center justify-center px-4 py-2 bg-[#5851EF] text-white text-xs font-semibold rounded-xl hover:bg-[#4841CF] transition-colors"
                     >
-                      Join Class
+                      {t("Join Class")}
                     </a>
                   )}
                 </div>
@@ -639,14 +641,14 @@ function CoursePlayerPageContent() {
               </svg>
             </div>
 
-            <h3 className="text-lg font-bold text-[#111]">Course Completion Certificate</h3>
+            <h3 className="text-lg font-bold text-[#111]">{t("Course Completion Certificate")}</h3>
             
             {isLoadingCertificate ? (
-              <p className="text-sm text-gray-500">Checking completion status...</p>
+              <p className="text-sm text-gray-500">{t("Checking completion status...")}</p>
             ) : certificateInfo?.is_eligible ? (
               <div className="w-full flex flex-col items-center space-y-3">
                 <p className="text-xs text-gray-600 max-w-xs leading-relaxed">
-                  Congratulations! You have completed 100% of this course. Your official certificate is ready.
+                  {t("Congratulations! You have completed 100% of this course. Your official certificate is ready.")}
                 </p>
                 <button
                   onClick={async () => {
@@ -699,7 +701,7 @@ function CoursePlayerPageContent() {
                   }}
                   className="w-full max-w-xs px-6 py-3 bg-[#5851EF] text-white text-xs font-bold rounded-xl hover:bg-[#4841CF] transition-colors shadow-sm"
                 >
-                  Get Certificate
+                  {t("Get Certificate")}
                 </button>
                 <button
                   onClick={async () => {
@@ -713,8 +715,8 @@ function CoursePlayerPageContent() {
                     if (!certUrl) certUrl = window.location.href;
 
                     const shareData = {
-                      title: "My Course Certificate",
-                      text: "Check out my course completion certificate on AppoLearn:",
+                      title: t("My Course Certificate"),
+                      text: t("Check out my course completion certificate on AppoLearn:"),
                       url: certUrl
                     };
 
@@ -725,7 +727,7 @@ function CoursePlayerPageContent() {
                     } else {
                       try {
                         await navigator.clipboard.writeText(certUrl);
-                        alert("Certificate link copied to clipboard!");
+                        alert(t("Certificate link copied to clipboard!"));
                       } catch (e) {}
                     }
                   }}
@@ -738,13 +740,13 @@ function CoursePlayerPageContent() {
                     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                   </svg>
-                  Share Certificate
+                  {t("Share Certificate")}
                 </button>
               </div>
             ) : (
               <div className="w-full flex flex-col items-center space-y-3">
                 <p className="text-xs text-gray-600 max-w-xs leading-relaxed">
-                  Complete 100% of the course curriculum to unlock your certificate.
+                  {t("Complete 100% of the course curriculum to unlock your certificate.")}
                 </p>
                 <div className="w-full bg-gray-100 rounded-full h-3 max-w-xs overflow-hidden">
                   <div
@@ -752,7 +754,7 @@ function CoursePlayerPageContent() {
                     style={{ width: `${certificateInfo?.progress || 0}%` }}
                   ></div>
                 </div>
-                <span className="text-xs font-semibold text-[#5851EF]">{certificateInfo?.progress || 0}% Complete</span>
+                <span className="text-xs font-semibold text-[#5851EF]">{t("____% Complete", certificateInfo?.progress || 0)}</span>
               </div>
             )}
           </div>
@@ -762,17 +764,17 @@ function CoursePlayerPageContent() {
         {activeTab === "notice_board" && (
           <div className="space-y-3">
             {isLoadingNotices ? (
-              <div className="text-center py-8 text-sm text-gray-500">Loading notices...</div>
+              <div className="text-center py-8 text-sm text-gray-500">{t("Loading notices...")}</div>
             ) : notices.length === 0 ? (
               <div className="text-center py-10 bg-white rounded-2xl border border-gray-100 text-gray-500 text-sm">
-                No notices found for this course.
+                {t("No notices found for this course.")}
               </div>
             ) : (
               notices.map((notice: any) => (
                 <div key={notice.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-2">
                   <h3 className="font-bold text-base text-[#111]">{notice.title}</h3>
                   <p className="text-xs text-gray-400">
-                    Posted on {notice.created_at ? new Date(notice.created_at).toLocaleDateString() : "Recent"}
+                    {t("Posted on ____", notice.created_at ? new Date(notice.created_at).toLocaleDateString() : t("Recent"))}
                   </p>
                   <div
                     className="prose prose-sm max-w-none text-[#333] text-xs leading-relaxed mt-2"
@@ -795,8 +797,9 @@ function CoursePlayerPageContent() {
 }
 
 export default function CoursePlayerPage() {
+  const { t } = useLanguage();
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-black text-white">Loading player...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-black text-white">{t("Loading player...")}</div>}>
       <CoursePlayerPageContent />
     </Suspense>
   );

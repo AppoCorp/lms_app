@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useMyCourses } from "../../../hooks/useMyCourses";
 import { useWishlist } from "../../../hooks/useWishlist";
 import { AlertPopup } from "../../components/AlertPopup";
+import { useLanguage } from "../../context/LanguageContext";
 
 const parseList = (data: any): string[] => {
   if (Array.isArray(data)) return data.map(String);
@@ -23,6 +24,7 @@ export default function CourseDetailPage() {
   const { id } = params;
   const { fetchCourseDetails, enrollFreeCourse } = useCourses();
   const { token } = useAuth();
+  const { t } = useLanguage();
   const { toggleWishlist } = useWishlist();
 
   const [course, setCourse] = useState<any>(null);
@@ -55,16 +57,16 @@ export default function CourseDetailPage() {
     try {
       const res = await enrollFreeCourse(id as string);
       if (res && (res.status === true || res.status === 1 || (res.message && res.message.toLowerCase().includes("enrolled")))) {
-        showAlert(res.message || "Enrolled successfully!", "success");
+        showAlert(res.message || t("Enrolled successfully!"), "success");
         await refreshCourseData();
         setTimeout(() => {
           router.push(`/my-course/${id}`);
         }, 800);
       } else {
-        showAlert(res?.message || "Failed to enroll. Please try again.", "error");
+        showAlert(res?.message || t("Failed to enroll. Please try again."), "error");
       }
     } catch (err: any) {
-      showAlert(err?.message || "Something went wrong. Please try again.", "error");
+      showAlert(err?.message || t("Something went wrong. Please try again."), "error");
     } finally {
       setIsEnrolling(false);
     }
@@ -78,7 +80,7 @@ export default function CourseDetailPage() {
       e.preventDefault();
     }
     if (!token) {
-      showAlert("Please log in to manage your wishlist", "info");
+      showAlert(t("Please log in to manage your wishlist"), "info");
       setTimeout(() => {
         router.push("/login");
       }, 1000);
@@ -91,12 +93,12 @@ export default function CourseDetailPage() {
       const isNowWishlisted = res?.status === "added" ? true : res?.status === "removed" ? false : !currentIsWishlisted;
       setCourse((prev: any) => prev ? { ...prev, is_wishlisted: isNowWishlisted } : prev);
       showAlert(
-        isNowWishlisted ? "Added to wishlist" : "Removed from wishlist",
+        isNowWishlisted ? t("Added to wishlist") : t("Removed from wishlist"),
         "success"
       );
     } catch (err) {
       setCourse((prev: any) => prev ? { ...prev, is_wishlisted: currentIsWishlisted } : prev);
-      showAlert("Failed to update wishlist", "error");
+      showAlert(t("Failed to update wishlist"), "error");
     }
   };
 
@@ -154,7 +156,7 @@ export default function CourseDetailPage() {
   if (!course) {
     return (
       <div className="flex min-h-screen items-center justify-center text-[#757575]">
-        Course not found.
+        {t("Course not found.")}
       </div>
     );
   }
@@ -165,7 +167,7 @@ export default function CourseDetailPage() {
 
   const isPurchased = course.is_purchased === 1 || course.is_purchased === true;
   const isPaid = course.is_paid === 1;
-  const price = isPaid ? (course.price ?? "") : "Free";
+  const price = isPaid ? (course.price ?? "") : t("Free");
 
   const toggleSection = (i: number) => {
     setOpenSections(prev =>
@@ -173,12 +175,14 @@ export default function CourseDetailPage() {
     );
   };
 
+  const tabLabels = { includes: t("Includes"), outcomes: t("Outcomes"), required: t("Required") };
+
   const tabContent = {
     includes: (
       <div className="px-4 pt-3 pb-4">
-        <p className="text-[15px] font-semibold text-[#111] mb-3">What is Included</p>
+        <p className="text-[15px] font-semibold text-[#111] mb-3">{t("What is Included")}</p>
         {includes.length === 0 ? (
-          <p className="text-[#757575] text-sm">No info available.</p>
+          <p className="text-[#757575] text-sm">{t("No info available.")}</p>
         ) : (
           <ul className="space-y-2">
             {includes.map((item, i) => (
@@ -192,9 +196,9 @@ export default function CourseDetailPage() {
     ),
     outcomes: (
       <div className="px-4 pt-3 pb-4">
-        <p className="text-[15px] font-semibold text-[#111] mb-3">What you will learn</p>
+        <p className="text-[15px] font-semibold text-[#111] mb-3">{t("What you will learn")}</p>
         {outcomes.length === 0 ? (
-          <p className="text-[#757575] text-sm">No outcomes listed.</p>
+          <p className="text-[#757575] text-sm">{t("No outcomes listed.")}</p>
         ) : (
           <ul className="space-y-2">
             {outcomes.map((item, i) => (
@@ -206,9 +210,9 @@ export default function CourseDetailPage() {
     ),
     required: (
       <div className="px-4 pt-3 pb-4">
-        <p className="text-[15px] font-semibold text-[#111] mb-3">Course Requirements</p>
+        <p className="text-[15px] font-semibold text-[#111] mb-3">{t("Course Requirements")}</p>
         {requirements.length === 0 ? (
-          <p className="text-[#757575] text-sm">No requirements listed.</p>
+          <p className="text-[#757575] text-sm">{t("No requirements listed.")}</p>
         ) : (
           <ul className="space-y-2">
             {requirements.map((item, i) => (
@@ -251,7 +255,7 @@ export default function CourseDetailPage() {
         {/* Heart / Wishlist */}
         <button
           onClick={handleToggleWishlist}
-          aria-label="Toggle Wishlist"
+          aria-label={t("Toggle Wishlist")}
           className="absolute top-8 right-4 z-20 p-2 cursor-pointer active:scale-95 transition-transform"
         >
           <div className="w-[38px] h-[38px] rounded-full flex items-center justify-center shadow-md transition-colors"
@@ -283,7 +287,7 @@ export default function CourseDetailPage() {
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
           </svg>
           <span className="text-[15px] text-[#757575] mr-1">{course.average_rating ?? "0.0"}</span>
-          <span className="text-[15px] text-[#757575]">({course.total_reviews ?? 0} Reviews)</span>
+          <span className="text-[15px] text-[#757575]">{t("(____ Reviews)", course.total_reviews ?? 0)}</span>
           <div className="flex-1" />
           <span className="text-[26px] font-medium text-[#111]">{price}</span>
         </div>
@@ -298,7 +302,7 @@ export default function CourseDetailPage() {
             </div>
             
             <div className="flex justify-between items-center text-[11px] text-[#757575] font-medium">
-              <span>{course.completion || 0}% Complete</span>
+              <span>{t("____% Complete", course.completion || 0)}</span>
               <span>{course.total_number_of_completed_lessons || 0}/{course.total_number_of_lessons || 0}</span>
             </div>
           </div>
@@ -318,7 +322,7 @@ export default function CourseDetailPage() {
                   : { background: "transparent", color: "#555" }
                 }
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tabLabels[tab]}
               </button>
             ))}
           </div>
@@ -329,9 +333,9 @@ export default function CourseDetailPage() {
         </div>
 
         {/* Course Curriculum */}
-        <p className="text-[17px] font-medium text-[#111] mb-3 px-1">Course curriculum</p>
+        <p className="text-[17px] font-medium text-[#111] mb-3 px-1">{t("Course curriculum")}</p>
         {sections.length === 0 ? (
-          <p className="text-[#757575] text-sm px-1">No curriculum available.</p>
+          <p className="text-[#757575] text-sm px-1">{t("No curriculum available.")}</p>
         ) : (
           <div className="flex flex-col gap-2 mb-6">
             {sections.map((section: any, i: number) => {
@@ -357,7 +361,7 @@ export default function CourseDetailPage() {
                           </span>
                         ) : null}
                         <span className="text-[11px] px-2 py-0.5 rounded-full font-medium text-[#E67E22]" style={{ background: "#FEF5E8" }}>
-                          {lessonCount} Lessons
+                          {t("____ Lessons", lessonCount)}
                         </span>
                       </div>
                     </div>
@@ -377,7 +381,7 @@ export default function CourseDetailPage() {
                             key={li} 
                             onClick={() => {
                               if (isLocked) {
-                                showAlert("This lesson is locked by Drip Content. Please complete previous lessons first.", "info");
+                                showAlert(t("This lesson is locked by Drip Content. Please complete previous lessons first."), "info");
                                 return;
                               }
                               if (isPurchased) {
@@ -480,7 +484,7 @@ export default function CourseDetailPage() {
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
             </svg>
           </button>
-          <span className="text-[11px] text-[#B0BEC5] font-medium">Account</span>
+          <span className="text-[11px] text-[#B0BEC5] font-medium">{t("Account")}</span>
         </div>
 
         {/* Divider */}
@@ -495,7 +499,7 @@ export default function CourseDetailPage() {
               className="flex-1 py-3 rounded-xl text-white text-[14px] font-medium"
               style={{ background: "#27AE60" }}
             >
-              {isPaid ? "Purchased" : "Enrolled"}
+              {isPaid ? t("Purchased") : t("Enrolled")}
             </button>
           ) : isPaid ? (
             <button
@@ -506,7 +510,7 @@ export default function CourseDetailPage() {
                 background: isWishlisted ? "#5851EF" : "white"
               }}
             >
-              {isWishlisted ? "View Wishlist" : "Add to Wishlist"}
+              {isWishlisted ? t("View Wishlist") : t("Add to Wishlist")}
             </button>
           ) : (
             /* Free → Enroll Now */
@@ -519,10 +523,10 @@ export default function CourseDetailPage() {
               {isEnrolling ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Enrolling...</span>
+                  <span>{t("Enrolling...")}</span>
                 </>
               ) : (
-                "Enroll Now"
+                t("Enroll Now")
               )}
             </button>
           )}

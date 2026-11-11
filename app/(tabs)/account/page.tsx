@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { LogoutModal } from "../../components/LogoutModal";
 
 export default function AccountPage() {
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { t } = useLanguage();
 
   React.useEffect(() => {
     if (!isAuthenticated) {
@@ -65,7 +67,7 @@ export default function AccountPage() {
              </div>
            )}
         </div>
-        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">{user?.name || "Demo Student"}</h1>
+        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">{user?.name || t("Demo Student")}</h1>
       </div>
 
       <div className="flex flex-col w-full">
@@ -76,7 +78,7 @@ export default function AccountPage() {
                 <div className="w-6 h-6 flex items-center justify-center mr-4">
                   {link.icon}
                 </div>
-                <span className="font-bold text-[15px] text-[var(--color-text-dark)] flex-1">{link.title}</span>
+                <span className="font-bold text-[15px] text-[var(--color-text-dark)] flex-1">{t(link.title)}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-dark)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </Link>
             ) : (
@@ -84,7 +86,7 @@ export default function AccountPage() {
                 <div className="w-6 h-6 flex items-center justify-center mr-4">
                   {link.icon}
                 </div>
-                <span className="font-bold text-[15px] text-[var(--color-text-dark)] flex-1">{link.title}</span>
+                <span className="font-bold text-[15px] text-[var(--color-text-dark)] flex-1">{t(link.title)}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-dark)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             )}
@@ -102,8 +104,8 @@ export default function AccountPage() {
             </svg>
           </div>
           <div className="flex-1 flex flex-col">
-            <span className="font-bold text-[15px] text-[var(--color-text-dark)] mb-0.5">About</span>
-            <span className="text-[11px] text-[var(--color-text-grey)]">Version: 1.3.0</span>
+            <span className="font-bold text-[15px] text-[var(--color-text-dark)] mb-0.5">{t("About")}</span>
+            <span className="text-[11px] text-[var(--color-text-grey)]">{t("Version: ____", "1.3.0")}</span>
           </div>
         </div>
       </div>

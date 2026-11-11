@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useMyCourses } from "../../../hooks/useMyCourses";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function MyCourseDetailPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function MyCourseDetailPage() {
   const { myCourses, fetchCourseSections, fetchLiveClass, toggleLessonCompleted } = useMyCourses();
   const { baseUrl } = useApp();
   const { token, user } = useAuth();
+  const { t } = useLanguage();
   
   const [activeTab, setActiveTab] = useState<"lessons" | "summary" | "liveClass" | "certificate" | "noticeBoard">("lessons");
   const [openAccordionIds, setOpenAccordionIds] = useState<number[]>([]);
@@ -191,8 +193,8 @@ export default function MyCourseDetailPage() {
     if (!certUrl) certUrl = window.location.href;
 
     const shareData = {
-      title: `My Certificate for ${course?.title || "Course"}`,
-      text: `I completed ${course?.title || "the course"} on AppoLearn! Check out my certificate:`,
+      title: t("My Certificate for ____", course?.title || t("Course")),
+      text: t("I completed ____ on AppoLearn! Check out my certificate:", course?.title || t("the course")),
       url: certUrl
     };
 
@@ -236,7 +238,7 @@ export default function MyCourseDetailPage() {
       {/* Clipboard copy toast */}
       {shareCopied && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] bg-[#333] text-white text-[13px] font-medium px-4 py-2 rounded-xl shadow-lg">
-          Link copied to clipboard!
+          {t("Link copied to clipboard!")}
         </div>
       )}
 
@@ -247,7 +249,7 @@ export default function MyCourseDetailPage() {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          Downloading certificate...
+          {t("Downloading certificate...")}
         </div>
       )}
       {/* Header */}
@@ -261,7 +263,7 @@ export default function MyCourseDetailPage() {
       <div className="px-5 mt-3">
         {/* Course Title above the card */}
         <h1 className="text-[17px] font-semibold text-[#111] mb-5 leading-snug">
-          {course ? course.title : "Course Details"}
+          {course ? course.title : t("Course Details")}
         </h1>
 
         {/* Course Info Card */}
@@ -315,7 +317,7 @@ export default function MyCourseDetailPage() {
                           <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
                           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                         </svg>
-                        Share this Course
+                        {t("Share this Course")}
                       </button>
                     </div>
                   </>
@@ -332,7 +334,7 @@ export default function MyCourseDetailPage() {
           </div>
           
           <div className="flex justify-between items-center text-[11px] text-[#757575] font-medium">
-            <span>{course?.completion || 0}% Complete</span>
+            <span>{t("____% Complete", course?.completion || 0)}</span>
             <span>{course?.total_number_of_completed_lessons || 0}/{course?.total_number_of_lessons || 0}</span>
           </div>
 
@@ -358,7 +360,7 @@ export default function MyCourseDetailPage() {
               }`}
             >
               {tab.icon}
-              {tab.label}
+              {t(tab.label)}
             </button>
           ))}
         </div>
@@ -367,10 +369,10 @@ export default function MyCourseDetailPage() {
         {activeTab === "lessons" && (
           <div className="flex flex-col space-y-4">
             {isLoading ? (
-              <div className="text-center text-[#757575] py-8 text-[14px]">Loading...</div>
+              <div className="text-center text-[#757575] py-8 text-[14px]">{t("Loading...")}</div>
             ) : sections.length === 0 ? (
               <div className="text-center text-[#757575] py-8 text-[14px]">
-                No lessons found for this course.
+                {t("No lessons found for this course.")}
               </div>
             ) : sections.map((section: any, sIdx: number) => {
               const isAccordionOpen = openAccordionIds.includes(section.id);
@@ -387,7 +389,7 @@ export default function MyCourseDetailPage() {
                           {section.totalDuration || "00:00:00"}
                         </div>
                         <div className="bg-[#FFF3E0] text-[#FF9800] px-2 py-1 rounded-[4px] text-[10px] font-medium tracking-wide">
-                          {section.lessons?.length || 0} Lessons
+                          {t("____ Lessons", section.lessons?.length || 0)}
                         </div>
                       </div>
                     </div>
@@ -486,9 +488,9 @@ export default function MyCourseDetailPage() {
         {/* Summary Tab */}
         {activeTab === "summary" && (
           <div className="bg-white rounded-[16px] p-5 shadow-[0_2px_20px_rgba(0,0,0,0.03)] space-y-4">
-            <h2 className="text-[17px] font-semibold text-[#111]">{course ? course.title : "Course Overview"}</h2>
+            <h2 className="text-[17px] font-semibold text-[#111]">{course ? course.title : t("Course Overview")}</h2>
             <p className="text-[14px] text-[#555] leading-relaxed">
-              Welcome to {course?.title || "this course"}. Use the curriculum lessons tab above to start watching your course modules.
+              {t("Welcome to ____. Use the curriculum lessons tab above to start watching your course modules.", course?.title || t("this course"))}
             </p>
           </div>
         )}
@@ -497,7 +499,7 @@ export default function MyCourseDetailPage() {
         {activeTab === "liveClass" && (!liveClassData || !liveClassData.live_classes || liveClassData.live_classes.length === 0) && (
           <div className="mt-2 px-2">
             <div className="bg-[#2A2A2A] text-white p-4 rounded-xl text-center text-[15px] leading-relaxed">
-              No live class is scheduled for this course yet. Please come back later.
+              {t("No live class is scheduled for this course yet. Please come back later.")}
             </div>
           </div>
         )}
@@ -506,17 +508,17 @@ export default function MyCourseDetailPage() {
           <div key={index} className="bg-white rounded-[16px] shadow-[0_2px_20px_rgba(0,0,0,0.03)] flex flex-col p-4 mb-4 border border-gray-50">
             <div className="flex justify-center items-center py-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              <span className="ml-2 text-[#111] text-[15px]">Zoom live class schedule</span>
+              <span className="ml-2 text-[#111] text-[15px]">{t("Zoom live class schedule")}</span>
             </div>
             <div className="text-center text-[#111] text-[15px] mb-3">
-              {liveClassData.zoomSdk || "active"}
+              {liveClassData.zoomSdk || t("active")}
             </div>
             <div className="flex justify-center items-center pb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               <span className="ml-2 text-[#111] text-[15px]">{liveClass.date_and_time}</span>
             </div>
             <div className="bg-gray-100 py-3 text-center text-[#111] text-[15px] mb-4">
-              Everyone must join
+              {t("Everyone must join")}
             </div>
             <a 
               href={liveClass.join_url} 
@@ -525,7 +527,7 @@ export default function MyCourseDetailPage() {
               className="bg-[#5851EF] text-white rounded-2xl py-3.5 flex justify-center items-center text-[16px] font-medium w-full mt-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect><line x1="8" y1="8" x2="8" y2="16"></line><line x1="4" y1="12" x2="12" y2="12"></line></svg>
-              Join live video class
+              {t("Join live video class")}
             </a>
           </div>
         ))}
@@ -540,20 +542,20 @@ export default function MyCourseDetailPage() {
               </svg>
             </div>
 
-            <h3 className="text-[17px] font-bold text-[#111]">Course Completion Certificate</h3>
+            <h3 className="text-[17px] font-bold text-[#111]">{t("Course Completion Certificate")}</h3>
             
             {isLoadingCertificate ? (
-              <p className="text-xs text-gray-500">Checking completion status...</p>
+              <p className="text-xs text-gray-500">{t("Checking completion status...")}</p>
             ) : (certificateInfo?.is_eligible || (course?.completion || 0) >= 100) ? (
               <div className="w-full flex flex-col items-center space-y-3">
                 <p className="text-xs text-gray-600 max-w-xs leading-relaxed">
-                  Congratulations! You have completed 100% of this course. Your official certificate is ready.
+                  {t("Congratulations! You have completed 100% of this course. Your official certificate is ready.")}
                 </p>
                 <button
                   onClick={handleGetCertificate}
                   className="w-full max-w-xs px-6 py-3 bg-[#5851EF] text-white text-xs font-bold rounded-xl hover:bg-[#4841CF] transition-colors shadow-sm"
                 >
-                  Get Certificate
+                  {t("Get Certificate")}
                 </button>
                 <button
                   onClick={handleShareCertificate}
@@ -566,13 +568,13 @@ export default function MyCourseDetailPage() {
                     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                   </svg>
-                  Share Certificate
+                  {t("Share Certificate")}
                 </button>
               </div>
             ) : (
               <div className="w-full flex flex-col items-center space-y-3">
                 <p className="text-xs text-gray-600 max-w-xs leading-relaxed">
-                  Complete 100% of the course curriculum to unlock your certificate.
+                  {t("Complete 100% of the course curriculum to unlock your certificate.")}
                 </p>
                 <div className="w-full bg-gray-100 rounded-full h-3 max-w-xs overflow-hidden">
                   <div
@@ -580,7 +582,7 @@ export default function MyCourseDetailPage() {
                     style={{ width: `${course?.completion || certificateInfo?.progress || 0}%` }}
                   ></div>
                 </div>
-                <span className="text-xs font-semibold text-[#5851EF]">{course?.completion || certificateInfo?.progress || 0}% Complete</span>
+                <span className="text-xs font-semibold text-[#5851EF]">{t("____% Complete", course?.completion || certificateInfo?.progress || 0)}</span>
               </div>
             )}
           </div>
@@ -590,17 +592,17 @@ export default function MyCourseDetailPage() {
         {activeTab === "noticeBoard" && (
           <div className="space-y-3">
             {isLoadingNotices ? (
-              <div className="text-center py-8 text-sm text-gray-500">Loading notices...</div>
+              <div className="text-center py-8 text-sm text-gray-500">{t("Loading notices...")}</div>
             ) : notices.length === 0 ? (
               <div className="text-center py-10 bg-white rounded-[16px] border border-gray-100 text-gray-500 text-sm">
-                No notices found for this course.
+                {t("No notices found for this course.")}
               </div>
             ) : (
               notices.map((notice: any) => (
                 <div key={notice.id} className="bg-white rounded-[16px] p-5 shadow-[0_2px_20px_rgba(0,0,0,0.03)] space-y-2">
                   <h3 className="font-bold text-base text-[#111]">{notice.title}</h3>
                   <p className="text-xs text-gray-400">
-                    Posted on {notice.created_at ? new Date(notice.created_at).toLocaleDateString() : "Recent"}
+                    {t("Posted on ____", notice.created_at ? new Date(notice.created_at).toLocaleDateString() : t("Recent"))}
                   </p>
                   <div
                     className="prose prose-sm max-w-none text-[#333] text-xs leading-relaxed mt-2"

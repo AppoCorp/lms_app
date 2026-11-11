@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useLanguage();
   
   const [userName, setUserName] = useState(user?.name || "");
 
@@ -27,7 +29,7 @@ export default function EditProfilePage() {
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">Edit Profile</h1>
+        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">{t("Edit Profile")}</h1>
       </div>
 
       <div className="p-6 flex-1">
@@ -44,14 +46,14 @@ export default function EditProfilePage() {
 
         <form onSubmit={handleSave}>
           <Input 
-            label="User Name" 
+            label={t("User Name")} 
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
           />
           
           <div className="mt-8">
             <Button type="submit" fullWidth>
-              Save Changes
+              {t("Save Changes")}
             </Button>
           </div>
         </form>

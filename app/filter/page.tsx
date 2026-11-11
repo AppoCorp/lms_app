@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilters } from "../../hooks/useFilters";
 import { Button } from "../components/Button";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function FilterScreen() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { categories, languages, isLoading, fetchFiltersData } = useFilters();
 
   const [keyword, setKeyword] = useState("");
@@ -61,14 +63,14 @@ export default function FilterScreen() {
         <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-bold text-[#111]">Filter Courses</h1>
+        <h1 className="text-xl font-bold text-[#111]">{t("Filter Courses")}</h1>
         <div className="w-10"></div>
       </div>
 
       <div className="flex-1 p-4 pb-24">
         {isLoading ? (
           <div className="flex justify-center mt-10">
-            <p className="text-gray-500">Loading filters...</p>
+            <p className="text-gray-500">{t("Loading filters...")}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
@@ -77,7 +79,7 @@ export default function FilterScreen() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={t("Search")}
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 className="w-full bg-[#F5F7FA] border border-gray-100 rounded-[16px] px-4 py-4 text-base focus:outline-none focus:border-gray-200"
@@ -93,9 +95,9 @@ export default function FilterScreen() {
 
             {/* Header: Category & Reset */}
             <div className="flex justify-between items-center pt-2">
-              <h2 className="text-[18px] font-medium text-[#111]">Category</h2>
+              <h2 className="text-[18px] font-medium text-[#111]">{t("Category")}</h2>
               <button type="button" onClick={handleReset} className="text-[18px] font-medium text-[var(--color-primary)]">
-                Reset
+                {t("Reset")}
               </button>
             </div>
 
@@ -109,7 +111,7 @@ export default function FilterScreen() {
                 }}
                 className="w-full bg-transparent border-none outline-none py-3 text-[#555] text-[15px] appearance-none"
               >
-                <option value="all">All Category</option>
+                <option value="all">{t("All Category")}</option>
                 {categories.map((cat: any) => (
                   <option key={cat.id} value={cat.id.toString()}>{cat.title || cat.name}</option>
                 ))}
@@ -121,7 +123,7 @@ export default function FilterScreen() {
 
             {/* Sub Category Dropdown */}
             <div>
-              <h2 className="text-[16px] font-normal text-[#111] mb-2">Sub Category</h2>
+              <h2 className="text-[16px] font-normal text-[#111] mb-2">{t("Sub Category")}</h2>
               <div className="bg-[#F5F7FA] rounded-[16px] px-4 py-1 relative">
                 <select
                   value={selectedSubCat}
@@ -129,7 +131,7 @@ export default function FilterScreen() {
                   className="w-full bg-transparent border-none outline-none py-3 text-[#555] text-[15px] appearance-none"
                   disabled={subCategories.length === 0}
                 >
-                  <option value="all">All Sub-Category</option>
+                  <option value="all">{t("All Sub-Category")}</option>
                   {subCategories.map((sub: any) => (
                     <option key={sub.id} value={sub.id.toString()}>{sub.title || sub.name}</option>
                   ))}
@@ -142,16 +144,16 @@ export default function FilterScreen() {
 
             {/* Pricing Dropdown */}
             <div>
-              <h2 className="text-[16px] font-normal text-[#111] mb-2">Pricing</h2>
+              <h2 className="text-[16px] font-normal text-[#111] mb-2">{t("Pricing")}</h2>
               <div className="bg-[#F5F7FA] rounded-[16px] px-4 py-1 relative">
                 <select
                   value={selectedPrice}
                   onChange={(e) => setSelectedPrice(e.target.value)}
                   className="w-full bg-transparent border-none outline-none py-3 text-[#555] text-[15px] appearance-none"
                 >
-                  <option value="all">All Price</option>
-                  <option value="free">Free</option>
-                  <option value="paid">Paid</option>
+                  <option value="all">{t("All Price")}</option>
+                  <option value="free">{t("Free")}</option>
+                  <option value="paid">{t("Paid")}</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -161,17 +163,17 @@ export default function FilterScreen() {
 
             {/* Level Dropdown */}
             <div>
-              <h2 className="text-[16px] font-normal text-[#111] mb-2">Level</h2>
+              <h2 className="text-[16px] font-normal text-[#111] mb-2">{t("Level")}</h2>
               <div className="bg-[#F5F7FA] rounded-[16px] px-4 py-1 relative">
                 <select
                   value={selectedLevel}
                   onChange={(e) => setSelectedLevel(e.target.value)}
                   className="w-full bg-transparent border-none outline-none py-3 text-[#555] text-[15px] appearance-none"
                 >
-                  <option value="all">All Level</option>
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
+                  <option value="all">{t("All Level")}</option>
+                  <option value="beginner">{t("Beginner")}</option>
+                  <option value="intermediate">{t("Intermediate")}</option>
+                  <option value="advanced">{t("Advanced")}</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -181,14 +183,14 @@ export default function FilterScreen() {
 
             {/* Language Dropdown */}
             <div>
-              <h2 className="text-[16px] font-normal text-[#111] mb-2">Language</h2>
+              <h2 className="text-[16px] font-normal text-[#111] mb-2">{t("Language")}</h2>
               <div className="bg-[#F5F7FA] rounded-[16px] px-4 py-1 relative">
                 <select
                   value={selectedLanguage}
                   onChange={(e) => setSelectedLanguage(e.target.value)}
                   className="w-full bg-transparent border-none outline-none py-3 text-[#555] text-[15px] appearance-none"
                 >
-                  <option value="all">All Language</option>
+                  <option value="all">{t("All Language")}</option>
                   {languages.map((lang: any) => (
                     <option key={lang.id} value={lang.value}>{lang.displayedValue}</option>
                   ))}
@@ -201,14 +203,14 @@ export default function FilterScreen() {
 
             {/* Rating Dropdown */}
             <div>
-              <h2 className="text-[16px] font-normal text-[#111] mb-2">Rating</h2>
+              <h2 className="text-[16px] font-normal text-[#111] mb-2">{t("Rating")}</h2>
               <div className="bg-[#F5F7FA] rounded-[16px] px-4 py-1 relative">
                 <select
                   value={selectedRating}
                   onChange={(e) => setSelectedRating(e.target.value)}
                   className="w-full bg-transparent border-none outline-none py-3 text-[#555] text-[15px] appearance-none"
                 >
-                  <option value="all">All Ratings</option>
+                  <option value="all">{t("All Ratings")}</option>
                   <option value="1">⭐☆☆☆☆</option>
                   <option value="2">⭐⭐☆☆☆</option>
                   <option value="3">⭐⭐⭐☆☆</option>
@@ -228,7 +230,7 @@ export default function FilterScreen() {
       {/* Sticky Bottom Button */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-gray-100 flex justify-center z-20">
         <Button onClick={() => handleSubmit()} className="w-[140px] shadow-sm">
-          Filter
+          {t("Filter")}
         </Button>
       </div>
     </div>

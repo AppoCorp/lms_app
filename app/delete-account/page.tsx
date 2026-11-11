@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/Button";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function DeleteAccountPage() {
   const router = useRouter();
   const { deleteAccount, logout } = useAuth();
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +24,7 @@ export default function DeleteAccountPage() {
 
   const handleConfirmDelete = async () => {
     if (!password) {
-      setError("Password cannot be empty");
+      setError(t("Password cannot be empty"));
       return;
     }
     
@@ -35,7 +37,7 @@ export default function DeleteAccountPage() {
       logout();
       router.push("/home");
     } catch (err: any) {
-      setError(err.message || "Failed to delete account");
+      setError(err.message || t("Failed to delete account"));
     } finally {
       setIsSubmitting(false);
     }
@@ -48,7 +50,7 @@ export default function DeleteAccountPage() {
         <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">Delete Account</h1>
+        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">{t("Delete Account")}</h1>
         <div className="w-10"></div>
       </div>
 
@@ -58,17 +60,17 @@ export default function DeleteAccountPage() {
             <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center mr-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
             </div>
-            <h2 className="text-lg font-bold text-[var(--color-text-dark)]">Delete Your Account</h2>
+            <h2 className="text-lg font-bold text-[var(--color-text-dark)]">{t("Delete Your Account")}</h2>
           </div>
           
           <div className="p-6">
             <p className="text-[var(--color-text-grey)] text-[15px] leading-relaxed mb-8">
-              When you delete your account you will lose accesss to your account services and we permanentlly delete your personal data.
+              {t("When you delete your account you will lose accesss to your account services and we permanentlly delete your personal data.")}
             </p>
             
             <div className="flex justify-end">
               <Button onClick={handleDeleteClick} className="w-32 bg-[var(--color-primary)] text-white">
-                Delete
+                {t("Delete")}
               </Button>
             </div>
           </div>
@@ -80,9 +82,9 @@ export default function DeleteAccountPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-xl">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-[var(--color-text-dark)] mb-2">Notifying</h3>
+              <h3 className="text-xl font-bold text-[var(--color-text-dark)] mb-2">{t("Notifying")}</h3>
               <p className="text-sm text-[var(--color-text-grey)] mb-6">
-                To remove your account provide your account password.
+                {t("To remove your account provide your account password.")}
               </p>
               
               <div className="relative mb-2">
@@ -91,7 +93,7 @@ export default function DeleteAccountPage() {
                 </div>
                 <input 
                   type={showPassword ? "text" : "password"}
-                  placeholder="password"
+                  placeholder={t("password")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-10 py-3 bg-[var(--color-background-input)] rounded-lg border border-transparent focus:border-[var(--color-primary)] focus:outline-none transition-colors text-sm"
@@ -116,14 +118,14 @@ export default function DeleteAccountPage() {
                   onClick={() => setIsModalOpen(false)} 
                   className="flex-1 bg-red-500 text-white hover:bg-red-600"
                 >
-                  No
+                  {t("No")}
                 </Button>
                 <Button 
                   onClick={handleConfirmDelete} 
                   isLoading={isSubmitting}
                   className="flex-1 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"
                 >
-                  Confirm
+                  {t("Confirm")}
                 </Button>
               </div>
             </div>

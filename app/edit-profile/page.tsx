@@ -4,10 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/Button";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const { user, updateProfile } = useAuth();
+  const { t } = useLanguage();
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -51,7 +53,7 @@ export default function EditProfilePage() {
       await updateProfile(formData);
       router.back();
     } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+      setError(err.message || t("Failed to update profile"));
     } finally {
       setIsSubmitting(false);
     }
@@ -64,7 +66,7 @@ export default function EditProfilePage() {
         <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-semibold text-[var(--color-text-dark)]">Update Profile</h1>
+        <h1 className="text-xl font-semibold text-[var(--color-text-dark)]">{t("Update Profile")}</h1>
         <div className="w-10"></div>
       </div>
 
@@ -76,7 +78,7 @@ export default function EditProfilePage() {
               className="w-32 h-32 rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center relative overflow-hidden shadow-sm"
             >
               {photoPreview ? (
-                <img src={photoPreview} alt="Profile" className="w-full h-full object-cover" />
+                <img src={photoPreview} alt={t("Profile")} className="w-full h-full object-cover" />
               ) : (
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               )}
@@ -101,7 +103,7 @@ export default function EditProfilePage() {
 
           <div className="space-y-4 mb-8">
             <div>
-              <label className="block text-[var(--color-text-dark)] font-medium mb-1">User Name</label>
+              <label className="block text-[var(--color-text-dark)] font-medium mb-1">{t("User Name")}</label>
               <input 
                 type="text" 
                 value={name}
@@ -113,7 +115,7 @@ export default function EditProfilePage() {
 
           <div className="mt-auto">
             <Button type="submit" fullWidth isLoading={isSubmitting}>
-              Update Profile
+              {t("Update Profile")}
             </Button>
           </div>
         </form>

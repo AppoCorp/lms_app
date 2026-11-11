@@ -4,9 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMyCourses } from "../../../hooks/useMyCourses";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function MyCoursesPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { myCourses, isLoadingMyCourses } = useMyCourses();
 
   const PlaceholderImage = () => (
@@ -22,12 +24,12 @@ export default function MyCoursesPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#FDFDFD] pt-14 pb-6 px-4">
       <div className="mb-6 px-1">
-        <h1 className="text-[18px] font-medium text-[#111]">My Courses</h1>
+        <h1 className="text-[18px] font-medium text-[#111]">{t("My Courses")}</h1>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         {isLoadingMyCourses ? (
-          <div className="col-span-2 text-center text-sm text-gray-500 py-4">Loading my courses...</div>
+          <div className="col-span-2 text-center text-sm text-gray-500 py-4">{t("Loading my courses...")}</div>
         ) : myCourses.map((course) => (
           <Link 
             key={course.id} 
@@ -54,7 +56,7 @@ export default function MyCoursesPage() {
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
                 <span className="text-[11px] text-[#757575] mr-1">{course.average_rating ? Number(course.average_rating).toFixed(1) : "0.0"}</span>
-                <span className="text-[11px] text-[#757575]">({course.total_reviews || 0} Reviews)</span>
+                <span className="text-[11px] text-[#757575]">({t("____ Reviews", course.total_reviews || 0)})</span>
               </div>
               
               <div className="w-full h-[6px] bg-gray-200 rounded-full mb-3 overflow-hidden">
@@ -65,7 +67,7 @@ export default function MyCoursesPage() {
               </div>
               
               <div className="flex justify-between items-center text-[10px] text-[#757575]">
-                <span>{course.completion || 0}% completed</span>
+                <span>{t("____% completed", course.completion || 0)}</span>
                 <span>{course.total_number_of_completed_lessons || 0}/{course.total_number_of_lessons || 0}</span>
               </div>
             </div>

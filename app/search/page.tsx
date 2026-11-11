@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { Input } from "../components/Input";
 
 import { useApp } from "../context/AppContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function SearchPage() {
   const router = useRouter();
   const { baseUrl } = useApp();
+  const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,13 +56,13 @@ export default function SearchPage() {
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </button>
-          <h1 className="text-xl font-bold text-[var(--color-text-dark)]">Search</h1>
+          <h1 className="text-xl font-bold text-[var(--color-text-dark)]">{t("Search")}</h1>
         </div>
         
         <form onSubmit={handleSearch} className="flex items-center space-x-2">
           <div className="flex-1">
             <Input 
-              placeholder="Search for courses..." 
+              placeholder={t("Search for courses...")} 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="mb-0 border-gray-200 bg-gray-50"
@@ -79,13 +81,13 @@ export default function SearchPage() {
       <div className="flex-1 px-6 py-6 overflow-y-auto">
         {hasSearched && (
           <h2 className="text-sm font-bold text-[var(--color-text-grey)] mb-4 uppercase tracking-wider">
-            {searchResults.length > 0 ? "Top Results" : "No Results Found"}
+            {searchResults.length > 0 ? t("Top Results") : t("No Results Found")}
           </h2>
         )}
         
         {isLoading ? (
           <div className="flex justify-center py-10">
-            <p className="text-gray-500">Searching...</p>
+            <p className="text-gray-500">{t("Searching...")}</p>
           </div>
         ) : (
           <div className="flex flex-col space-y-4">
@@ -104,7 +106,7 @@ export default function SearchPage() {
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     {course.is_paid === 0 || course.isFree ? (
-                      <span className="font-bold text-[var(--color-primary)]">Free</span>
+                      <span className="font-bold text-[var(--color-primary)]">{t("Free")}</span>
                     ) : (
                       <span className="font-bold text-[var(--color-primary)]">{course.price}</span>
                     )}

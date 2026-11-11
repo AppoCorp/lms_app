@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "./Button";
+import { useLanguage } from "../context/LanguageContext";
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -8,6 +9,8 @@ interface LogoutModalProps {
 }
 
 export function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalProps) {
+  const { t } = useLanguage();
+
   if (!isOpen) return null;
 
   return (
@@ -15,10 +18,10 @@ export function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalProps) {
       <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-xl transform scale-100 transition-transform duration-200">
         <div className="p-8 text-center">
           <h2 className="text-2xl font-bold font-inter mb-4 text-[var(--color-text-dark)]">
-            Log Out?
+            {t("Log Out?")}
           </h2>
           <p className="text-[var(--color-text-grey)] font-inter text-base mb-8">
-            Are you sure, You want to logout?
+            {t("Are you sure, You want to logout?")}
           </p>
           
           <div className="flex justify-between space-x-4">
@@ -26,13 +29,13 @@ export function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalProps) {
               onClick={onClose} 
               className="flex-1 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"
             >
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button 
               onClick={onConfirm} 
               className="flex-1 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"
             >
-              Confirm
+              {t("Confirm")}
             </Button>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 import { AlertPopup } from "../../components/AlertPopup";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function QuizPage() {
   const params = useParams();
@@ -15,6 +16,7 @@ export default function QuizPage() {
 
   const { token } = useAuth();
   const { baseUrl } = useApp();
+  const { t } = useLanguage();
 
   const [quizDetails, setQuizDetails] = useState<any>(null);
   const [questions, setQuestions] = useState<any[]>([]);
@@ -125,7 +127,7 @@ export default function QuizPage() {
     });
 
     if (unanswered.length > 0) {
-      showAlert("Please answer all questions before submitting.", "info");
+      showAlert(t("Please answer all questions before submitting."), "info");
       return;
     }
 
@@ -146,15 +148,15 @@ export default function QuizPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || "Failed to submit quiz");
+        throw new Error(data.message || t("Failed to submit quiz"));
       }
 
-      showAlert("Quiz submitted successfully!", "success");
+      showAlert(t("Quiz submitted successfully!"), "success");
       setQuizStarted(false);
       await loadQuizData();
       setViewingResults(true);
     } catch (err: any) {
-      showAlert(err.message || "An error occurred", "error");
+      showAlert(err.message || t("An error occurred"), "error");
     } finally {
       setSubmitting(false);
     }
@@ -181,9 +183,9 @@ export default function QuizPage() {
   if (error || !quizDetails) {
     return (
       <div className="flex flex-col min-h-screen items-center justify-center text-[#757575] bg-white p-6 text-center">
-        <p className="text-sm font-medium mb-4">{error || "Quiz not found."}</p>
+        <p className="text-sm font-medium mb-4">{error ? t(error) : t("Quiz not found.")}</p>
         <button onClick={handleGoBack} className="px-5 py-2.5 bg-[#5851EF] text-white rounded-xl text-[14px] font-medium">
-          Go Back
+          {t("Go Back")}
         </button>
       </div>
     );
@@ -212,7 +214,7 @@ export default function QuizPage() {
             {/* Last attempt score summary card */}
             {lastSubmission && viewingResults && (
               <div className="bg-white rounded-2xl shadow-sm border border-[#F0F0F0] p-5 mb-5">
-                <h2 className="text-[15px] font-semibold text-[#111] mb-4">Last Attempt Result</h2>
+                <h2 className="text-[15px] font-semibold text-[#111] mb-4">{t("Last Attempt Result")}</h2>
                 
                 {(() => {
                   const totalQuestions = questions.length || 1;
@@ -226,31 +228,31 @@ export default function QuizPage() {
                     <div>
                       <div className="flex justify-between items-center mb-4">
                         <div>
-                          <p className="text-[12px] text-[#757575] font-medium uppercase tracking-wider">Status</p>
+                          <p className="text-[12px] text-[#757575] font-medium uppercase tracking-wider">{t("Status")}</p>
                           <span className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${passed ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                            {passed ? "Passed" : "Failed"}
+                            {passed ? t("Passed") : t("Failed")}
                           </span>
                         </div>
                         <div className="text-right">
-                          <p className="text-[12px] text-[#757575] font-medium uppercase tracking-wider">Score Obtained</p>
+                          <p className="text-[12px] text-[#757575] font-medium uppercase tracking-wider">{t("Score Obtained")}</p>
                           <p className="text-[20px] font-bold text-[#111] mt-0.5">{obtainedMark} / {quizDetails.total_mark}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 bg-[#F9FAFB] rounded-xl p-3 border border-[#F0F0F0] mb-4">
                         <div>
-                          <span className="text-[11px] text-[#757575] block font-medium">Correct Answers</span>
+                          <span className="text-[11px] text-[#757575] block font-medium">{t("Correct Answers")}</span>
                           <span className="text-[14px] font-semibold text-green-600">{correctCount}</span>
                         </div>
                         <div>
-                          <span className="text-[11px] text-[#757575] block font-medium">Wrong Answers</span>
+                          <span className="text-[11px] text-[#757575] block font-medium">{t("Wrong Answers")}</span>
                           <span className="text-[14px] font-semibold text-red-600">{wrongCount}</span>
                         </div>
                       </div>
 
                       {/* Detailed Submission Question Breakdown */}
                       <div className="mt-5 border-t border-[#F0F0F0] pt-4">
-                        <h3 className="text-sm font-semibold text-[#111] mb-3">Review Questions</h3>
+                        <h3 className="text-sm font-semibold text-[#111] mb-3">{t("Review Questions")}</h3>
                         <div className="space-y-4">
                           {questions.map((question, qi) => {
                             const isCorrect = lastSubmission.correct_answer?.includes(question.id);
@@ -268,12 +270,12 @@ export default function QuizPage() {
                                     
                                     <div className="text-[11px] text-[#757575] space-y-1 bg-[#F9FAFB] p-2.5 rounded-lg border border-[#F0F0F0]">
                                       <p>
-                                        <span className="font-semibold">Your Answer: </span>
-                                        {Array.isArray(userAns) ? userAns.join(", ") : String(userAns || "No answer")}
+                                        <span className="font-semibold">{t("Your Answer:")} </span>
+                                        {Array.isArray(userAns) ? userAns.join(", ") : String(userAns || t("No answer"))}
                                       </p>
                                       {correctAns !== undefined && !isCorrect && (
                                         <p className="text-green-600">
-                                          <span className="font-semibold">Correct Answer: </span>
+                                          <span className="font-semibold">{t("Correct Answer:")} </span>
                                           {Array.isArray(correctAns) ? correctAns.join(", ") : String(correctAns)}
                                         </p>
                                       )}
@@ -300,45 +302,45 @@ export default function QuizPage() {
 
             {/* Quiz Info card */}
             <div className="bg-white rounded-2xl shadow-sm border border-[#F0F0F0] p-5 mb-6">
-              <h2 className="text-[15px] font-semibold text-[#111] mb-4">Quiz Specifications</h2>
+              <h2 className="text-[15px] font-semibold text-[#111] mb-4">{t("Quiz Specifications")}</h2>
               <div className="space-y-3.5">
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-[#757575]">Total Questions</span>
+                  <span className="text-[13px] text-[#757575]">{t("Total Questions")}</span>
                   <span className="text-[13px] font-semibold text-[#111]">{questions.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-[#757575]">Duration Limit</span>
+                  <span className="text-[13px] text-[#757575]">{t("Duration Limit")}</span>
                   <span className="text-[13px] font-semibold text-[#111]">
                     {(() => {
                       const dur = (quizDetails.duration || "00:00:00").split(":");
                       const hrs = parseInt(dur[0] || "0");
                       const mins = parseInt(dur[1] || "0");
-                      if (hrs > 0) return `${hrs} hr ${mins} mins`;
-                      return `${mins} minutes`;
+                      if (hrs > 0) return t("____ hr ____ mins", hrs, mins);
+                      return t("____ minutes", mins);
                     })()}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-[#757575]">Total Mark</span>
+                  <span className="text-[13px] text-[#757575]">{t("Total Mark")}</span>
                   <span className="text-[13px] font-semibold text-[#111]">{quizDetails.total_mark}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-[#757575]">Pass Mark</span>
+                  <span className="text-[13px] text-[#757575]">{t("Pass Mark")}</span>
                   <span className="text-[13px] font-semibold text-[#111]">{quizDetails.pass_mark}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-[#757575]">Attempts Allowed</span>
+                  <span className="text-[13px] text-[#757575]">{t("Attempts Allowed")}</span>
                   <span className="text-[13px] font-semibold text-[#111]">{retakeLimit}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-[#757575]">Attempts Used</span>
+                  <span className="text-[13px] text-[#757575]">{t("Attempts Used")}</span>
                   <span className="text-[13px] font-semibold text-[#111]">{submissionsCount}</span>
                 </div>
               </div>
 
               {quizDetails.summary && (
                 <div className="mt-4 pt-4 border-t border-[#F0F0F0]">
-                  <p className="text-[11px] text-[#757575] font-semibold uppercase tracking-wider mb-1.5">Quiz Summary</p>
+                  <p className="text-[11px] text-[#757575] font-semibold uppercase tracking-wider mb-1.5">{t("Quiz Summary")}</p>
                   <p className="text-[12px] text-[#555] leading-relaxed" dangerouslySetInnerHTML={{ __html: quizDetails.summary }} />
                 </div>
               )}
@@ -355,11 +357,11 @@ export default function QuizPage() {
                   }}
                   className="w-full py-3.5 bg-[#5851EF] text-white rounded-xl text-[14px] font-semibold hover:bg-[#4841CF] transition-colors shadow-sm"
                 >
-                  {submissionsCount > 0 ? "Retake Quiz" : "Start Quiz"}
+                  {submissionsCount > 0 ? t("Retake Quiz") : t("Start Quiz")}
                 </button>
               ) : (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-center">
-                  <p className="text-[12px] text-amber-800 font-medium">You have reached the maximum number of quiz attempts allowed.</p>
+                  <p className="text-[12px] text-amber-800 font-medium">{t("You have reached the maximum number of quiz attempts allowed.")}</p>
                 </div>
               )}
             </div>
@@ -369,7 +371,7 @@ export default function QuizPage() {
           <div className="flex flex-col gap-4">
             {/* Progress bar */}
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[11px] text-[#757575] font-semibold uppercase">Question {currentQuestionIndex + 1} of {questions.length}</span>
+              <span className="text-[11px] text-[#757575] font-semibold uppercase">{t("Question ____ of ____", currentQuestionIndex + 1, questions.length)}</span>
               <span className="text-[12px] font-semibold text-[#5851EF]">{Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%</span>
             </div>
 
@@ -426,7 +428,7 @@ export default function QuizPage() {
                               <div className={`w-5 h-5 rounded-full border flex items-center justify-center mb-2.5 ${isSelected ? 'border-[#5851EF]' : 'border-[#C0C0C0]'}`}>
                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#5851EF]" />}
                               </div>
-                              {val}
+                              {t(val === "true" ? "True" : "False")}
                             </button>
                           );
                         })}
@@ -446,7 +448,7 @@ export default function QuizPage() {
                             </span>
                           ))}
                           {(answers[currentQuestion.id] || []).length === 0 && (
-                            <span className="text-[11px] text-[#757575] italic">No answers added yet.</span>
+                            <span className="text-[11px] text-[#757575] italic">{t("No answers added yet.")}</span>
                           )}
                         </div>
 
@@ -454,7 +456,7 @@ export default function QuizPage() {
                         <div className="flex gap-2">
                           <input
                             type="text"
-                            placeholder="Type an answer keyword..."
+                            placeholder={t("Type an answer keyword...")}
                             value={tempFillBlankVal}
                             onChange={(e) => setTempFillBlankVal(e.target.value)}
                             onKeyDown={(e) => {
@@ -469,11 +471,11 @@ export default function QuizPage() {
                             onClick={() => handleAddFillBlankAnswer(currentQuestion.id)}
                             className="px-4 bg-[#5851EF] text-white rounded-xl text-xs font-semibold hover:bg-[#4841CF] transition-colors"
                           >
-                            Add
+                            {t("Add")}
                           </button>
                         </div>
                         <span className="text-[10px] text-[#757575] mt-2 block leading-normal">
-                          Type an answer keyword and press "Add" or hit enter. You can add multiple key phrases.
+                          {t('Type an answer keyword and press "Add" or hit enter. You can add multiple key phrases.')}
                         </span>
                       </div>
                     )}
@@ -491,7 +493,7 @@ export default function QuizPage() {
                       }}
                       className="py-3 bg-white border border-[#E0E0E0] text-[#555] rounded-xl text-[13px] font-semibold transition-colors hover:bg-[#F9FAFB]"
                     >
-                      {currentQuestionIndex === 0 ? "Quit Quiz" : "Previous"}
+                      {currentQuestionIndex === 0 ? t("Quit Quiz") : t("Previous")}
                     </button>
 
                     {currentQuestionIndex < questions.length - 1 ? (
@@ -499,7 +501,7 @@ export default function QuizPage() {
                         onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
                         className="py-3 bg-[#5851EF] text-white rounded-xl text-[13px] font-semibold hover:bg-[#4841CF] transition-colors"
                       >
-                        Next Question
+                        {t("Next Question")}
                       </button>
                     ) : (
                       <button
@@ -510,7 +512,7 @@ export default function QuizPage() {
                         {submitting ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
-                          "Submit Quiz"
+                          t("Submit Quiz")
                         )}
                       </button>
                     )}

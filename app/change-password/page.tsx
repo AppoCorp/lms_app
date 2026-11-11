@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/Button";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
   const { changePassword } = useAuth();
+  const { t } = useLanguage();
   
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -22,7 +24,7 @@ export default function ChangePasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setError("New passwords do not match.");
+      setError(t("New passwords do not match."));
       return;
     }
 
@@ -36,12 +38,12 @@ export default function ChangePasswordPage() {
         new_password: newPassword,
         confirm_password: confirmPassword,
       });
-      setSuccess("Password updated successfully.");
+      setSuccess(t("Password updated successfully."));
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
-      setError(err.message || "Failed to update password");
+      setError(err.message || t("Failed to update password"));
     } finally {
       setIsSubmitting(false);
     }
@@ -64,7 +66,7 @@ export default function ChangePasswordPage() {
         <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">Update Password</h1>
+        <h1 className="text-xl font-bold text-[var(--color-text-dark)]">{t("Update Password")}</h1>
         <div className="w-10"></div>
       </div>
 
@@ -74,7 +76,7 @@ export default function ChangePasswordPage() {
           <div className="relative">
             <input 
               type={showCurrentPassword ? "text" : "password"} 
-              placeholder="Current Password"
+              placeholder={t("Current Password")}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               className="w-full p-4 pr-12 bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
@@ -86,7 +88,7 @@ export default function ChangePasswordPage() {
           <div className="relative">
             <input 
               type={showNewPassword ? "text" : "password"} 
-              placeholder="New Password"
+              placeholder={t("New Password")}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full p-4 pr-12 bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
@@ -98,7 +100,7 @@ export default function ChangePasswordPage() {
           <div className="relative">
             <input 
               type={showConfirmPassword ? "text" : "password"} 
-              placeholder="Confirm Password"
+              placeholder={t("Confirm Password")}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full p-4 pr-12 bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
@@ -112,7 +114,7 @@ export default function ChangePasswordPage() {
 
           <div className="pt-6">
             <Button type="submit" fullWidth isLoading={isSubmitting}>
-              Update Now
+              {t("Update Now")}
             </Button>
           </div>
         </form>

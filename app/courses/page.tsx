@@ -4,9 +4,11 @@ import React, { useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCourses } from "../../hooks/useCourses";
+import { useLanguage } from "../context/LanguageContext";
 
 function CoursesContent() {
   const router = useRouter();
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const { topCourses, isLoadingTopCourses, fetchTopCourses, fetchFilteredCourses } = useCourses();
 
@@ -49,16 +51,16 @@ function CoursesContent() {
         <button onClick={() => router.back()} className="p-2 -ml-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-semibold text-[#111]">Courses</h1>
+        <h1 className="text-xl font-semibold text-[#111]">{t("Courses")}</h1>
         <div className="w-10"></div>
       </div>
 
       <div className="px-5 mt-2">
-        <h2 className="text-[17px] font-semibold text-[#111] mb-5">Showing {topCourses.length} Courses</h2>
+        <h2 className="text-[17px] font-semibold text-[#111] mb-5">{t("Showing ____ Courses", topCourses.length)}</h2>
         
         <div className="flex flex-col space-y-4">
           {isLoadingTopCourses ? (
-             <div className="text-center text-gray-500 py-10">Loading courses...</div>
+             <div className="text-center text-gray-500 py-10">{t("Loading courses...")}</div>
           ) : topCourses.map((course) => (
             <Link key={course.id} href={`/course/${course.id}`} className="bg-white rounded-[20px] p-[10px] shadow-[0_2px_15px_rgba(0,0,0,0.04)] border border-gray-50 flex items-center min-h-[140px]">
               <div className="w-[120px] h-[120px] shrink-0 mr-4">
@@ -74,10 +76,10 @@ function CoursesContent() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#FF9800" stroke="#FF9800" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mr-[2px]">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                   </svg>
-                  <span className="text-[#FF9800] mr-1">{course.average_rating ? Number(course.average_rating).toFixed(1) : "0.0"}</span> ({course.total_reviews || 0} Reviews)
+                  <span className="text-[#FF9800] mr-1">{course.average_rating ? Number(course.average_rating).toFixed(1) : "0.0"}</span> {t("(____ Reviews)", course.total_reviews || 0)}
                 </div>
                 {course.is_paid === 0 || course.isFree ? (
-                  <span className="font-bold text-[18px] text-[#111]">Free</span>
+                  <span className="font-bold text-[18px] text-[#111]">{t("Free")}</span>
                 ) : (
                   <span className="font-bold text-[18px] text-[#111]">{course.price}</span>
                 )}
@@ -91,8 +93,9 @@ function CoursesContent() {
 }
 
 export default function AllCoursesPage() {
+  const { t } = useLanguage();
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">{t("Loading...")}</div>}>
       <CoursesContent />
     </Suspense>
   );

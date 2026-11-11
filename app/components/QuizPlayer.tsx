@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "../context/LanguageContext";
 
 type QuizQuestion = {
   id: string;
@@ -24,6 +25,7 @@ type AnswerValue = string | string[];
 
 export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlayerProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, { type: QuizQuestion["type"]; value: AnswerValue }>>({});
@@ -134,7 +136,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
 
     const unansweredQuestion = questions.find((question) => !isQuestionAnswered(question));
     if (unansweredQuestion) {
-      setSubmitError("Please answer all questions before submitting.");
+      setSubmitError(t("Please answer all questions before submitting."));
       const unansweredIndex = questions.findIndex((question) => question.id === unansweredQuestion.id);
       if (unansweredIndex >= 0) {
         setCurrentIndex(unansweredIndex);
@@ -160,12 +162,12 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to submit quiz.");
+        throw new Error(data.message || t("Failed to submit quiz."));
       }
 
       setSubmitted(true);
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Failed to submit quiz.");
+      setSubmitError(error instanceof Error ? error.message : t("Failed to submit quiz."));
     } finally {
       setSubmitting(false);
     }
@@ -176,7 +178,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
       <div className="absolute inset-0 flex items-center justify-center bg-white text-[#111]">
         <div className="text-center">
           <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#5851EF] border-t-transparent" />
-          <p className="text-sm font-medium text-[#555]">Loading quiz...</p>
+          <p className="text-sm font-medium text-[#555]">{t("Loading quiz...")}</p>
         </div>
       </div>
     );
@@ -186,13 +188,13 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
     return (
       <div className="absolute inset-0 flex items-center justify-center bg-white px-6 text-center">
         <div>
-          <p className="text-lg font-semibold text-[#111]">Quiz unavailable</p>
-          <p className="mt-2 text-sm text-[#757575]">{loadingError}</p>
+          <p className="text-lg font-semibold text-[#111]">{t("Quiz unavailable")}</p>
+          <p className="mt-2 text-sm text-[#757575]">{t(loadingError)}</p>
           <button
             onClick={() => router.back()}
             className="mt-5 rounded-2xl bg-[#5851EF] px-5 py-3 text-sm font-medium text-white"
           >
-            Go back
+            {t("Go back")}
           </button>
         </div>
       </div>
@@ -205,7 +207,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
         <button
           onClick={() => router.back()}
           className="mb-6 flex h-10 w-10 items-center justify-center rounded-full bg-[#F2F3F5] text-[#111]"
-          aria-label="Back"
+          aria-label={t("Back")}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
@@ -213,10 +215,10 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
         </button>
 
         <div className="rounded-[24px] border border-[#F0F0F0] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
-          <p className="text-sm font-medium text-[#5851EF]">Quiz completed</p>
-          <h2 className="mt-2 text-2xl font-bold text-[#111]">Your answers were submitted</h2>
+          <p className="text-sm font-medium text-[#5851EF]">{t("Quiz completed")}</p>
+          <h2 className="mt-2 text-2xl font-bold text-[#111]">{t("Your answers were submitted")}</h2>
           <p className="mt-3 text-sm leading-6 text-[#757575]">
-            The backend has recorded your submission and updated the lesson progress.
+            {t("The backend has recorded your submission and updated the lesson progress.")}
           </p>
 
           <div className="mt-6 flex gap-3">
@@ -224,13 +226,13 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
               onClick={() => router.push(`/my-course/${courseId}`)}
               className="flex-1 rounded-2xl bg-[#5851EF] px-4 py-3 text-sm font-medium text-white"
             >
-              Back to course
+              {t("Back to course")}
             </button>
             <button
               onClick={() => router.back()}
               className="flex-1 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-medium text-[#111]"
             >
-              Close
+              {t("Close")}
             </button>
           </div>
         </div>
@@ -242,13 +244,13 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
     return (
       <div className="absolute inset-0 flex items-center justify-center bg-white px-6 text-center">
         <div>
-          <p className="text-lg font-semibold text-[#111]">No quiz questions found</p>
-          <p className="mt-2 text-sm text-[#757575]">The lesson is marked as a quiz, but the backend returned no questions.</p>
+          <p className="text-lg font-semibold text-[#111]">{t("No quiz questions found")}</p>
+          <p className="mt-2 text-sm text-[#757575]">{t("The lesson is marked as a quiz, but the backend returned no questions.")}</p>
           <button
             onClick={() => router.back()}
             className="mt-5 rounded-2xl bg-[#5851EF] px-5 py-3 text-sm font-medium text-white"
           >
-            Go back
+            {t("Go back")}
           </button>
         </div>
       </div>
@@ -262,7 +264,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
           <button
             onClick={() => router.back()}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F2F3F5] text-[#111]"
-            aria-label="Back"
+            aria-label={t("Back")}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
@@ -271,7 +273,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
 
           <div className="text-center">
             <p className="text-sm font-semibold text-[#111]">{title}</p>
-            <p className="text-[12px] text-[#757575]">Question {currentIndex + 1} of {questions.length}</p>
+            <p className="text-[12px] text-[#757575]">{t("Question ____ of ____", currentIndex + 1, questions.length)}</p>
           </div>
 
           <div className="w-10" />
@@ -286,7 +288,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
         <div className="flex-1 overflow-y-auto px-4 py-4 pb-28">
           <div className="rounded-[24px] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
             <div className="mb-4 inline-flex rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-[#5851EF]">
-              {currentQuestion?.type === "mcq" ? "Multiple choice" : currentQuestion?.type === "fill_blanks" ? "Fill in the blanks" : currentQuestion?.type === "true_false" ? "True / False" : "Question"}
+              {currentQuestion?.type === "mcq" ? t("Multiple choice") : currentQuestion?.type === "fill_blanks" ? t("Fill in the blanks") : currentQuestion?.type === "true_false" ? t("True / False") : t("Question")}
             </div>
 
             <div
@@ -322,11 +324,11 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
                   <input
                     value={typeof currentAnswer?.value === "string" ? currentAnswer.value : ""}
                     onChange={(event) => handleFillBlankChange(currentQuestion, event.target.value)}
-                    placeholder="Type your answer, separate multiple blanks with commas"
+                    placeholder={t("Type your answer, separate multiple blanks with commas")}
                     className="w-full rounded-2xl border border-[#E5E7EB] bg-[#FAFBFD] px-4 py-3 text-sm text-[#111] outline-none transition-colors focus:border-[#5851EF]"
                   />
                   <p className="text-xs leading-5 text-[#757575]">
-                    If the quiz expects more than one blank, enter them in order and separate them with commas.
+                    {t("If the quiz expects more than one blank, enter them in order and separate them with commas.")}
                   </p>
                 </div>
               )}
@@ -345,7 +347,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
                         onClick={() => setQuestionAnswer(currentQuestion, option.value)}
                         className={`rounded-2xl border px-4 py-4 text-sm font-semibold transition-colors ${selected ? "border-[#5851EF] bg-[#EEF0FF] text-[#5851EF]" : "border-[#E5E7EB] bg-white text-[#111] hover:bg-[#FAFAFA]"}`}
                       >
-                        {option.label}
+                        {t(option.label)}
                       </button>
                     );
                   })}
@@ -368,7 +370,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
               disabled={currentIndex === 0}
               className="flex-1 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-medium text-[#111] disabled:opacity-50"
             >
-              Previous
+              {t("Previous")}
             </button>
 
             {currentIndex < questions.length - 1 ? (
@@ -376,7 +378,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
                 onClick={goNext}
                 className="flex-1 rounded-2xl bg-[#5851EF] px-4 py-3 text-sm font-medium text-white"
               >
-                Next
+                {t("Next")}
               </button>
             ) : (
               <button
@@ -384,7 +386,7 @@ export function QuizPlayer({ baseUrl, token, courseId, quizId, title }: QuizPlay
                 disabled={submitting}
                 className="flex-1 rounded-2xl bg-[#111827] px-4 py-3 text-sm font-medium text-white disabled:opacity-70"
               >
-                {submitting ? "Submitting..." : "Submit Quiz"}
+                {submitting ? t("Submitting...") : t("Submit Quiz")}
               </button>
             )}
           </div>

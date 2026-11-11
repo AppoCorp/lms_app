@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../../components/Input";
 import { useApp } from "../../context/AppContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function SignupPage() {
   const router = useRouter();
   const { baseUrl, setBaseUrl } = useApp();
+  const { t } = useLanguage();
 
   const [serverUrl, setServerUrl] = useState("");
   const [name, setName] = useState("");
@@ -26,12 +28,12 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("Passwords do not match"));
       return;
     }
     
     if (!serverUrl.trim()) {
-      setError("Please enter the Server URL");
+      setError(t("Please enter the Server URL"));
       return;
     }
 
@@ -61,10 +63,10 @@ export default function SignupPage() {
         router.push("/login");
       } else {
         const data = await response.json();
-        setError(data.message || "Registration failed. Please try again.");
+        setError(data.message || t("Registration failed. Please try again."));
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred during registration");
+      setError(err.message || t("An error occurred during registration"));
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +80,7 @@ export default function SignupPage() {
           <div className="text-[#5851EF]">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
           </div>
-          <h1 className="text-[28px] font-bold text-[#111111]">Sign Up</h1>
+          <h1 className="text-[28px] font-bold text-[#111111]">{t("Sign Up")}</h1>
         </div>
 
         {/* Login / Signup toggle pill */}
@@ -88,13 +90,13 @@ export default function SignupPage() {
             onClick={() => router.push("/login")}
             className="px-5 py-2 rounded-full text-sm font-semibold text-[#757575] hover:text-[#111111] transition-all duration-200"
           >
-            Log In
+            {t("Log In")}
           </button>
           <button
             type="button"
             className="px-5 py-2 rounded-full text-sm font-semibold bg-[#5851EF] text-white shadow-md transition-all duration-200"
           >
-            Sign Up
+            {t("Sign Up")}
           </button>
         </div>
       </div>
@@ -102,7 +104,7 @@ export default function SignupPage() {
       <form onSubmit={handleSignup} className="flex flex-col flex-1">
         {/* Your organization Section */}
         <div className="flex flex-col gap-2 mb-6">
-          <label className="text-sm font-bold text-[#111111] px-1">Your organization</label>
+          <label className="text-sm font-bold text-[#111111] px-1">{t("Your organization")}</label>
           <div className="relative flex items-center">
             <div className="absolute left-4 text-[#5851EF]">
               <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -130,19 +132,19 @@ export default function SignupPage() {
               </div>
             )}
           </div>
-          <span className="text-[12px] text-[#757575] font-medium px-1">Enter your organization's URL to continue</span>
+          <span className="text-[12px] text-[#757575] font-medium px-1">{t("Enter your organization's URL to continue")}</span>
         </div>
 
         {/* Separator */}
         <div className="flex items-center my-6">
           <div className="flex-1 border-t border-gray-200"></div>
-          <span className="mx-4 text-sm text-gray-400 font-medium">and</span>
+          <span className="mx-4 text-sm text-gray-400 font-medium">{t("and")}</span>
           <div className="flex-1 border-t border-gray-200"></div>
         </div>
 
         {/* Registration details Section */}
         <div className="flex flex-col gap-2 mb-6">
-          <label className="text-sm font-bold text-[#111111] px-1">Registration details</label>
+          <label className="text-sm font-bold text-[#111111] px-1">{t("Registration details")}</label>
           <div className="border border-gray-200 rounded-[20px] overflow-hidden bg-white">
             {/* Name Input */}
             <div className="relative flex items-center border-b border-gray-200 bg-white">
@@ -151,7 +153,7 @@ export default function SignupPage() {
               </div>
               <input
                 type="text"
-                placeholder="Name"
+                placeholder={t("Name")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full bg-transparent py-4 pl-12 pr-4 outline-none text-[15px] text-[#111111] placeholder-gray-400 font-medium"
@@ -165,7 +167,7 @@ export default function SignupPage() {
               </div>
               <input
                 type="email"
-                placeholder="E-mail"
+                placeholder={t("E-mail")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-transparent py-4 pl-12 pr-4 outline-none text-[15px] text-[#111111] placeholder-gray-400 font-medium"
@@ -179,7 +181,7 @@ export default function SignupPage() {
               </div>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t("Password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-transparent py-4 pl-12 pr-4 outline-none text-[15px] text-[#111111] placeholder-gray-400 font-medium"
@@ -193,7 +195,7 @@ export default function SignupPage() {
               </div>
               <input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder={t("Confirm Password")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full bg-transparent py-4 pl-12 pr-4 outline-none text-[15px] text-[#111111] placeholder-gray-400 font-medium"
@@ -218,7 +220,7 @@ export default function SignupPage() {
               background: 'linear-gradient(to right, #CC61FF 5%, #5851EF 88%)'
             }}
           >
-            {isLoading ? "Signing Up..." : "Sign Up"}
+            {isLoading ? t("Signing Up...") : t("Sign Up")}
           </button>
         </div>
       </form>

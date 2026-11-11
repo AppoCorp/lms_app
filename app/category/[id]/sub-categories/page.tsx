@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { useApp } from "../../../context/AppContext";
+import { useLanguage } from "../../../context/LanguageContext";
 
 export default function SubCategoriesPage() {
   const router = useRouter();
   const params = useParams();
   const categoryId = params.id as string;
   const { baseUrl } = useApp();
+  const { t } = useLanguage();
 
   const [subCategories, setSubCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,18 +44,18 @@ export default function SubCategoriesPage() {
         <button onClick={() => router.back()} className="p-2 -ml-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h1 className="text-xl font-semibold text-[#111] truncate max-w-[200px]">Sub-Categories</h1>
+        <h1 className="text-xl font-semibold text-[#111] truncate max-w-[200px]">{t("Sub-Categories")}</h1>
         <div className="w-10"></div>
       </div>
 
       <div className="px-5 mt-2">
         {isLoading ? (
-          <p className="text-center text-[#757575] mt-10">Loading...</p>
+          <p className="text-center text-[#757575] mt-10">{t("Loading...")}</p>
         ) : subCategories.length === 0 ? (
-          <p className="text-center text-[#757575] mt-10">No sub-categories found.</p>
+          <p className="text-center text-[#757575] mt-10">{t("No sub-categories found.")}</p>
         ) : (
           <>
-            <h2 className="text-[17px] font-semibold text-[#111] mb-5">Showing {subCategories.length} Sub-Categories</h2>
+            <h2 className="text-[17px] font-semibold text-[#111] mb-5">{t("Showing ____ Sub-Categories", subCategories.length)}</h2>
 
             <div className="flex flex-col space-y-[2px]">
               {subCategories.map((subCat: any, index: number) => {
@@ -73,7 +75,7 @@ export default function SubCategoriesPage() {
                     {/* Middle Content */}
                     <div className="flex-1 flex flex-col justify-center px-2">
                       <p className="text-[11px] text-[#757575] mb-1">
-                        {subCat.number_of_courses ?? 0} Courses
+                        {t("____ Courses", subCat.number_of_courses ?? 0)}
                       </p>
                       <h3 className="font-medium text-[#111] text-[16px] leading-tight">
                         {subCat.title ?? subCat.name}

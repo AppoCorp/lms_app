@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "../context/LanguageContext";
+import { TopBar } from "../components/TopBar";
 
 const HomeIcon = ({ active }: { active: boolean }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={active ? "text-[#5851EF]" : "text-[#7A7985]"}>
@@ -34,6 +36,7 @@ const AccountIcon = ({ active }: { active: boolean }) => (
 
 export default function TabsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { t } = useLanguage();
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   const tabs = [
@@ -45,6 +48,8 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--color-background)] relative">
+      {!isAuthPage && <TopBar />}
+
       <div className={`flex-1 ${isAuthPage ? "" : "pb-20"}`}>
         {children}
       </div>
@@ -77,7 +82,7 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
                   }`}
                 >
                   <tab.icon active={isActive} />
-                  <span className="text-[11px] font-medium mt-1">{tab.name}</span>
+                  <span className="text-[11px] font-medium mt-1">{t(tab.name)}</span>
                 </Link>
               );
             })}

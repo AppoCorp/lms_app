@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { useApp } from "../context/AppContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export default function ForgotPasswordPage() {
   const [message, setMessage] = useState<{ text: string, type: 'error' | 'success' } | null>(null);
   const router = useRouter();
   const { baseUrl } = useApp();
+  const { t } = useLanguage();
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +35,14 @@ export default function ForgotPasswordPage() {
       const data = await response.json();
 
       if (response.status === 200 || response.ok) {
-        setMessage({ text: data.message || "Password reset link sent to your email", type: 'success' });
+        setMessage({ text: data.message || t("Password reset link sent to your email"), type: 'success' });
         // Don't route to verify email, as it usually opens an email link directly.
         // Wait, the flutter app doesn't have a verify email screen, it probably just shows a toast.
       } else {
-        setMessage({ text: data.message || "Failed to send reset link", type: 'error' });
+        setMessage({ text: data.message || t("Failed to send reset link"), type: 'error' });
       }
     } catch (err: any) {
-      setMessage({ text: err.message || "An error occurred", type: 'error' });
+      setMessage({ text: err.message || t("An error occurred"), type: 'error' });
     } finally {
       setIsLoading(false);
     }
@@ -57,15 +59,15 @@ export default function ForgotPasswordPage() {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-text-dark)] mb-2">Forgot Password?</h1>
-          <p className="text-[var(--color-text-grey)]">Enter your email address to get a password reset link.</p>
+          <h1 className="text-3xl font-bold text-[var(--color-text-dark)] mb-2">{t("Forgot Password?")}</h1>
+          <p className="text-[var(--color-text-grey)]">{t("Enter your email address to get a password reset link.")}</p>
         </div>
 
         <form onSubmit={handleReset} className="flex flex-col flex-1">
           <Input 
-            label="Email Address" 
+            label={t("Email Address")} 
             type="email" 
-            placeholder="Enter your email" 
+            placeholder={t("Enter your email")} 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -79,7 +81,7 @@ export default function ForgotPasswordPage() {
 
           <div className="mt-4 mb-6">
             <Button type="submit" fullWidth disabled={isLoading}>
-              {isLoading ? "Sending..." : "Send Reset Link"}
+              {isLoading ? t("Sending...") : t("Send Reset Link")}
             </Button>
           </div>
         </form>
