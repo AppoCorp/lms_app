@@ -56,7 +56,7 @@ export default function AccountPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen pt-12 pb-24 bg-[var(--color-background)]">
+    <div className="flex flex-col min-h-screen pt-4 pb-24 bg-[var(--color-background)]">
       <div className="flex flex-col items-center mb-8">
         <div className="w-32 h-32 rounded-full border border-gray-200 bg-white flex items-center justify-center mb-4 shadow-sm relative overflow-hidden">
            {user?.photo ? (

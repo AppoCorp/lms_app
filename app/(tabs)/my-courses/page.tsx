@@ -22,7 +22,7 @@ export default function MyCoursesPage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FDFDFD] pt-14 pb-6 px-4">
+    <div className="flex flex-col min-h-screen bg-[#FDFDFD] pt-4 pb-6 px-4">
       <div className="mb-6 px-1">
         <h1 className="text-[18px] font-medium text-[#111]">{t("My Courses")}</h1>
       </div>

@@ -33,7 +33,7 @@ export default function HomePage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-white pt-10">
+    <div className="flex flex-col min-h-screen bg-white pt-2">
 
 
       <div className="px-5">
