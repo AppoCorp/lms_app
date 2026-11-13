@@ -27,7 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Android WebView (the installed app) gets status-bar spacing; set before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if (/; wv\)/.test(navigator.userAgent)) document.documentElement.classList.add("android-app");`,
+          }}
+        />
+      </head>
       <body className={`${poppins.variable} font-sans antialiased`}>
         <Providers>{children}</Providers>
       </body>

@@ -80,7 +80,7 @@ export function TopBar() {
   const showLanguage = isAuthenticated && (hindiAvailable || language === "hindi");
 
   return (
-    <div className="sticky top-0 z-40 bg-[var(--color-background)] pt-[env(safe-area-inset-top)]">
+    <div className="sticky top-0 z-40 bg-[var(--color-background)]">
       <div className="flex items-center justify-between px-5 py-3">
         <div className="h-11 flex items-center max-w-[60%]">
           {branding?.logo ? (

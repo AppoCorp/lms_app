@@ -21,3 +21,34 @@ body {
   background-color: var(--color-background);
   color: var(--color-text-dark);
 }
+
+/* Phone status bar / notch.
+   The Android app shows this site edge-to-edge under a transparent status bar with
+   white icons, and its WebView often reports no inset, so reserve a minimum there. */
+:root {
+  --status-bar: env(safe-area-inset-top, 0px);
+}
+html.android-app {
+  --status-bar: max(env(safe-area-inset-top, 0px), 32px);
+}
+body {
+  padding-top: var(--status-bar);
+}
+/* Brand-coloured strip behind the status bar so its white icons stay readable */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--status-bar);
+  background: var(--color-primary);
+  z-index: 1000;
+}
+/* Pinned headers stop below the status bar instead of sliding under it */
+.sticky.top-0 {
+  top: var(--status-bar);
+}
+.min-h-screen {
+  min-height: calc(100vh - var(--status-bar));
+}
