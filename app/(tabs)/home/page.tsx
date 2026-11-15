@@ -10,7 +10,7 @@ import { useLanguage } from "../../context/LanguageContext";
 
 export default function HomePage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { topCourses, isLoadingTopCourses, fetchTopCourses } = useCourses();
   const { categories, fetchCategories, isLoadingCategories } = useCategories();
   const { baseUrl } = useApp();
@@ -77,10 +77,6 @@ export default function HomePage() {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-[22px] font-semibold text-[#111]">{t("Course Categories")}</h2>
-            <Link href="/courses" className="text-[15px] text-[#5851EF] font-medium flex items-center">
-              {t("All courses")}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </Link>
           </div>
           
           <div className="flex flex-col space-y-[1px] bg-gray-200">
@@ -96,8 +92,10 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="flex-1 flex flex-col justify-center">
-                  <p className="text-[13px] text-[#757575] font-medium mb-1">{t("____ sub-categories", cat.number_of_sub_categories || 0)}</p>
-                  <h3 className="font-semibold text-[#111] text-[15px] leading-tight">{cat.title}</h3>
+                  <h3 className="font-semibold text-[#111] text-[15px] leading-tight mb-1">{cat.title}</h3>
+                  <p className="text-[13px] text-[#757575] font-medium">
+                    {language === "english" && Number(cat.number_of_courses) === 1 ? "1 Course" : t("____ Courses", cat.number_of_courses || 0)}
+                  </p>
                 </div>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center ml-2" style={{ background: 'linear-gradient(to right, #CC61FF, #5851EF)' }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

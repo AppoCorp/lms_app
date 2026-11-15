@@ -81,8 +81,8 @@ export function TopBar() {
 
   return (
     <div className="sticky top-0 z-40 bg-[var(--color-background)]">
-      <div className="flex items-center justify-between px-5 py-3">
-        <div className="h-11 flex items-center max-w-[60%]">
+      <div className="flex items-center justify-between px-5 py-2">
+        <div className="h-14 flex items-center max-w-[65%]">
           {branding?.logo ? (
             <img src={branding.logo} alt={branding.name || "Logo"} className="h-full w-auto object-contain" />
           ) : (
@@ -99,10 +99,10 @@ export function TopBar() {
               aria-haspopup="menu"
               aria-expanded={menuOpen}
               aria-label={t("Language")}
-              className="h-11 min-w-11 px-3 flex items-center gap-1 rounded-xl border border-gray-200 bg-white text-[var(--color-text-dark)] font-semibold text-sm disabled:opacity-60"
+              className="h-8 px-2 flex items-center gap-0.5 rounded-lg border border-gray-200 bg-white text-[var(--color-text-dark)] font-semibold text-xs disabled:opacity-60"
             >
               {language === "hindi" ? "हिंदी" : "ENG"}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </button>
